@@ -3,6 +3,18 @@ import styled from "styled-components";
 
 const PostModal = (props) => {
   const [editorText, setEditorText] = useState("");
+  const [shareImage, setShareImage] = useState("");
+
+  const handleChange = (e) => {
+    const image = e.target.files[0];
+
+    if (image === "" || image === undefined) {
+      alert(`not a image, the file is a ${typeof image}`);
+      return;
+    }
+    // if dont get an error then the setShareImage updates the shareImage
+    setShareImage(image);
+  };
 
   const reset = (e) => {
     setEditorText("");
@@ -31,7 +43,23 @@ const PostModal = (props) => {
                   onChange={(e) => setEditorText(e.target.value)} //set whatever the value is and set it to the setEditorText
                   placeholder="What do you want to talk about?"
                   autoFocus={true}
-                ></textarea>
+                />
+                <UploadImage>
+                  <input
+                    type="file"
+                    accept="image/gif, image/jpeg, image/png"
+                    name="image"
+                    id="file"
+                    style={{ display: "none" }}
+                    onChange={handleChange}
+                  />
+                  <p>
+                    <label htmlFor="file">Select an image to share</label>
+                  </p>
+                  {shareImage && (
+                    <img src={URL.createObjectURL(shareImage)} alt="" />
+                  )}
+                </UploadImage>
               </Editor>
             </SharedContent>
             <SharedCreation>
@@ -200,9 +228,9 @@ const PostButton = styled.button`
   padding-left: 16px;
   padding-right: 16px;
   background: ${(props) => (props.disabled ? "rgba(0,0,0,0.8)" : "#0a66c2")};
-  color: white;
+  color: ${(props) => (props.disabled ? "rgba(1, 1, 1, 0.2)" : "white")};
   &:hover {
-    background: #004182;
+    background: ${(props) => (props.disabled ? "rgba(0,0,0,0.08)" : "#004182")};
   }
 `;
 
@@ -219,6 +247,13 @@ const Editor = styled.div`
     height: 35px;
     font-size: 16px;
     margin-bottom: 20px;
+  }
+`;
+
+const UploadImage = styled.div`
+  text-align: center;
+  img {
+    width: 100%;
   }
 `;
 
